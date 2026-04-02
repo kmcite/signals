@@ -4,6 +4,10 @@ abstract class Computed<T> {
   T call();
   T get state;
   T get value;
+
+  /// Read the current computed value without registering the caller as a
+  /// dependent.
+  T peek();
 }
 
 final class _ComputedImpl<T> extends ComputedNode<T> implements Computed<T> {
@@ -19,6 +23,12 @@ final class _ComputedImpl<T> extends ComputedNode<T> implements Computed<T> {
 
   @override
   T get value => get();
+
+  @override
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
+  @pragma('wasm:prefer-inline')
+  T peek() => super.peek();
 }
 
 @pragma('vm:prefer-inline')

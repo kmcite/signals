@@ -48,6 +48,26 @@ class SignalNode<T> extends ReactiveNode {
     return currentValue;
   }
 
+  /// Read the current value without establishing a dependency.
+  ///
+  /// This behaves like [get] except it skips the tracking step that would
+  /// normally link the active subscriber to this signal. Useful for
+  /// inspecting a signal without affecting reactivity.
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
+  @pragma('wasm:prefer-inline')
+  T peek() {
+    if ((flags & ReactiveFlags.dirty) != ReactiveFlags.none) {
+      if (didUpdate()) {
+        final subs = this.subs;
+        if (subs != null) {
+          shallowPropagate(subs);
+        }
+      }
+    }
+    return currentValue;
+  }
+
   @pragma('vm:prefer-inline')
   @pragma('dart2js:tryInline')
   @pragma('wasm:prefer-inline')

@@ -6,6 +6,9 @@ abstract class Signal<T> {
   set value(T value);
   T get state;
   T get value;
+
+  /// Read the current value without tracking a dependency.
+  T peek();
 }
 
 final class _SignalImpl<T> extends SignalNode<T> implements Signal<T> {
@@ -32,6 +35,12 @@ final class _SignalImpl<T> extends SignalNode<T> implements Signal<T> {
   get state => get();
   @override
   set state(T value) => set(value);
+
+  @override
+  @pragma('vm:prefer-inline')
+  @pragma('dart2js:tryInline')
+  @pragma('wasm:prefer-inline')
+  T peek() => super.peek();
 }
 
 @pragma('vm:prefer-inline')

@@ -51,6 +51,21 @@ class _UIState extends State<UI> {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+    _effect?.call();
+
+    _effect = effect(() {
+      _child = widget.build(context);
+      _scheduleRebuild();
+    });
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     _effect?.call();
     widget.dispose();
